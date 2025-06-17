@@ -1,7 +1,7 @@
 package service;
 
 import model.FileInfo;
-import util.SimpleHasher;
+import util.CustomHasher;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -17,7 +17,7 @@ public class FileDeduplicationService {
                     .filter(Files::isRegularFile)
                     .forEach(file -> {
                         try {
-                            String hash = SimpleHasher.hash(file);
+                            String hash = CustomHasher.hash(file);
                             long size = Files.size(file);
                             FileInfo info = new FileInfo(file, size, hash);
                             duplicates.computeIfAbsent(hash, k -> new ArrayList<>()).add(info);
