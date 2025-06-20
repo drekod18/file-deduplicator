@@ -38,3 +38,5 @@ out/
 /src/main/resources/css/styles.css
 /src/test/java/service/DuplicateScannerTest.java
 /src/test/java/util/CustomHasherTest.java
+
+README.md
