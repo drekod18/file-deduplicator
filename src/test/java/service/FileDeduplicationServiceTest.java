@@ -52,10 +52,9 @@ class FileDeduplicationServiceTest {
     /**
      * Этот тест проверяет удаление (перемещение в корзину).
      * Он будет пропущен в CI/CD средах на Linux, где нет GUI и корзины.
-     * Для локальной разработки на Windows/macOS он должен работать.
      */
     @Test
-    @DisabledOnOs(OS.LINUX) // Пропускаем на Linux, т.к. AWT/Desktop может быть недоступен
+    @DisabledOnOs(OS.LINUX)
     void testDeleteSelectedDuplicates() {
         // Act
         int deletedCount = service.deleteSelectedDuplicates(files);

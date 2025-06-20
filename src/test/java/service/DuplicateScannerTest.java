@@ -23,8 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class DuplicateScannerTest {
 
     /**
-     * JUnit 5 автоматически создаст временную директорию перед каждым тестом
-     * и удалит ее после, обеспечивая чистоту тестовой среды.
+     * JUnit 5 автоматически создаст временную директорию перед каждым тестом и удалит ее после.
      */
     @TempDir
     Path rootDir;
@@ -36,8 +35,7 @@ class DuplicateScannerTest {
     private Path uniqueFile;
 
     /**
-     * Метод, помеченный @BeforeEach, выполняется перед каждым тестовым методом.
-     * Он создает сложную файловую структуру для тестирования различных сценариев.
+     * @BeforeEach, выполняется перед каждым тестовым методом.
      */
     @BeforeEach
     void setUp() throws IOException {
@@ -65,7 +63,7 @@ class DuplicateScannerTest {
     void testFindsAllDuplicates() throws Exception {
         // Arrange (Подготовка)
         // Создаем сканер с "пустыми" слушателями, так как в этом тесте нас не интересует
-        // обновление прогресса или сообщений.
+        // обновление прогресса или сообщений
         DuplicateScanner scanner = new DuplicateScanner(progress -> {}, message -> {});
 
         // Act (Действие)

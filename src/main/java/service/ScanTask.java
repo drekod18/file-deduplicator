@@ -34,7 +34,7 @@ public class ScanTask extends Task<List<FileInfo>> {
      */
     @Override
     protected List<FileInfo> call() throws Exception {
-        // Создаем наш чистый сканер.
+        // Создаем сканер:
         // В качестве слушателей (колбэков) мы передаем ему методы этого Task'а:
         // - updateProgress() для обновления ProgressBar
         // - updateMessage() для обновления Label со статусом
