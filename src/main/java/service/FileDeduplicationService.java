@@ -1,51 +1,57 @@
 package service;
 
 import model.FileInfo;
-import util.CustomHasher;
+import java.awt.Desktop;
+import java.util.List;
 
-import java.io.IOException;
-import java.nio.file.*;
-import java.util.*;
-
+/**
+ * Сервисный класс, отвечающий за удаление файлов.
+ */
 public class FileDeduplicationService {
-    private final Map<String, List<FileInfo>> duplicates = new HashMap<>();
 
-    public List<FileInfo> findDuplicates(Path root) {
-        duplicates.clear();
-        try {
-            Files.walk(root)
-                    .filter(Files::isRegularFile)
-                    .forEach(file -> {
-                        try {
-                            String hash = CustomHasher.hash(file);
-                            long size = Files.size(file);
-                            FileInfo info = new FileInfo(file, size, hash);
-                            duplicates.computeIfAbsent(hash, k -> new ArrayList<>()).add(info);
-                        } catch (IOException ignored) {}
-                    });
-        } catch (IOException e) {
-            e.printStackTrace();
+    /**
+     * Удаляет файлы, отмеченные для удаления, путем перемещения их в системную корзину.
+     * Метод выполняет удаление, только если операционная система
+     * поддерживает перемещение в корзину. Если поддержка отсутствует (например, в среде без GUI),
+     * метод не будет производить никаких действий и вернет 0, чтобы гарантировать,
+     * что файлы не будут удалены необратимо без ведома пользователя.
+     *
+     * @param allFiles список объектов FileInfo, содержащий информацию о файлах,
+     *                 среди которых могут быть отмеченные для удаления (isSelected() == true).
+     * @return количество успешно перемещенных в корзину файлов.
+     */
+    public int deleteSelectedDuplicates(List<FileInfo> allFiles) {
+        if (allFiles == null || allFiles.isEmpty()) {
+            return 0;
         }
 
-        List<FileInfo> result = new ArrayList<>();
-        for (List<FileInfo> group : duplicates.values()) {
-            if (group.size() > 1) result.addAll(group);
-        }
-        return result;
-    }
-
-    public int deleteFoundDuplicates() {
-        int deleted = 0;
-        for (List<FileInfo> group : duplicates.values()) {
-            if (group.size() > 1) {
-                for (int i = 1; i < group.size(); i++) {
-                    try {
-                        Files.deleteIfExists(group.get(i).getPath());
-                        deleted++;
-                    } catch (IOException ignored) {}
+        // Проверяем, поддерживается ли перемещение в корзину
+        if (isTrashSupported()) {
+            int deletedCount = 0;
+            for (FileInfo fileInfo : allFiles) {
+                if (fileInfo.isSelected()) {
+                    if (Desktop.getDesktop().moveToTrash(fileInfo.getPath().toFile())) {
+                        deletedCount++;
+                    }
                 }
             }
+            return deletedCount;
+        } else {
+            // Если корзина не поддерживается, выводим сообщение для разработчика в консоль
+            // и НЕ делаем ничего с файлами. Возвращаем 0.
+            System.err.println("Warning: Move to trash is not supported on this platform. No files were deleted.");
+            return 0;
         }
-        return deleted;
+    }
+
+    /**
+     * Вспомогательный публичный метод, который позволяет UI заранее проверить,
+     * будет ли работать функция удаления.
+     * Кнопка "Удалить" станет неактивной, если этот метод вернет false.
+     *
+     * @return true, если перемещение в корзину поддерживается, иначе false.
+     */
+    public boolean isTrashSupported() {
+        return Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.MOVE_TO_TRASH);
     }
 }
