@@ -22,3 +22,19 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# Скомпилированные классы
+/target/
+
+# Файлы IDE
+.idea/
+*.iml
+*.iws
+out/
+
+
+/src/main/java/gui/MainWindow.java
+/src/main/java/service/ScanTask.java
+/src/main/resources/css/styles.css
+/src/test/java/service/DuplicateScannerTest.java
+/src/test/java/util/CustomHasherTest.java

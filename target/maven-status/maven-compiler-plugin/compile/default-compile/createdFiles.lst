@@ -1,6 +1,0 @@
-App.class
-Launcher.class
-model\FileInfo.class
-gui\MainWindow.class
-util\CustomHasher.class
-service\FileDeduplicationService.class
